@@ -1,0 +1,26 @@
+{
+  "full_name": "Juan Pablo Perez",
+  "name": "Juan Pablo",
+  "current_role": "Machine Learning Engineer",
+  "location": "Bogotá, Colombia",
+  "email": "juanperez4364985@gmail.com",
+  "linkedin": "https://www.linkedin.com/in/juan-pablo-perez-atehortua-60b101230/",
+  "specialties": [
+    "Machine Learning",
+    "IA",
+    "Data Science"
+  ],
+  "years_experience": 5,
+  "education": [
+    {
+      "degree": "Master en IA",
+      "institution": "Universidad de los Andes",
+      "year": "2026"
+    },
+    {
+      "degree": "Ingeniería Industrial",
+      "institution": "Universidad de los Andes",
+      "year": "2024"
+    }
+  ]
+}
