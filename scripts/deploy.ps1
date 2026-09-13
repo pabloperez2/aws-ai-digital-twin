@@ -15,7 +15,15 @@ Set-Location ..
 
 # 2. Workspace y terraform apply
 Set-Location terraform
-terraform init -input=false
+# Nuevas líneas:
+$awsAccountId = aws sts get-caller-identity --query Account --output text
+$awsRegion = if ($env:DEFAULT_AWS_REGION) { $env:DEFAULT_AWS_REGION } else { "us-east-1" }
+terraform init -input=false `
+  -backend-config="bucket=twin-terraform-state-$awsAccountId" `
+  -backend-config="key=$Environment/terraform.tfstate" `
+  -backend-config="region=$awsRegion" `
+  -backend-config="dynamodb_table=twin-terraform-locks" `
+  -backend-config="encrypt=true"
 
 if (-not (terraform workspace list | Select-String $Environment)) {
     terraform workspace new $Environment
@@ -34,7 +42,7 @@ $FrontendBucket = terraform output -raw s3_frontend_bucket
 try { $CustomUrl = terraform output -raw custom_domain_url } catch { $CustomUrl = "" }
 
 # 3. Construir y desplegar el frontend
-Set-Location ..\frontend
+Set-Location ../frontend
 
 # Crear archivo .env.production con el URL de la API
 Write-Host "Definiendo API URL para producción..." -ForegroundColor Yellow
@@ -42,7 +50,7 @@ Write-Host "Definiendo API URL para producción..." -ForegroundColor Yellow
 
 npm install
 npm run build
-aws s3 sync .\out "s3://$FrontendBucket/" --delete
+aws s3 sync ./out "s3://$FrontendBucket/" --delete
 Set-Location ..
 
 # 4. Resumen final
