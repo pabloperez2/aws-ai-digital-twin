@@ -58,6 +58,11 @@ try {
 
 Write-Host "Ejecutando terraform destroy..." -ForegroundColor Yellow
 
+if (-not (Test-Path "../backend/lambda-deployment.zip")) {
+    Write-Host "Creando paquete lambda de prueba para la destrucción..." -ForegroundColor Gray
+    Set-Content -Path "../backend/lambda-deployment.zip" -Value "dummy"
+}
+
 if ($Environment -eq "prod" -and (Test-Path "prod.tfvars")) {
     terraform destroy -var-file=prod.tfvars `
                      -var="project_name=$ProjectName" `
